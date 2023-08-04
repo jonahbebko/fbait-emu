@@ -31,7 +31,7 @@ Comments can be written either in-line or whole-line with a semicolon. **Jump ad
 
 ## Extra Notes
 
-FURRYBAIT will detect out-of-range memory addresses however **it will not detect out-of-range registers.** There are plans to add this detection, although the program will error out either way.
+FURRYBAIT will automatically detect out-of-range registers at assembletime and memory addresses at runtime.
 
 A URCL compiler will eventually be implemented.
 
