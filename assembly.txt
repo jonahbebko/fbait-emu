@@ -1,8 +1,8 @@
 LDI R6 0xF4 ; current port (decimal display)
 LDI R7 0x5  ; loop address
 LDI R5 0xC  ; overflow halt address
-LDI R1 0
-LDI R2 1
+LDI R1 1
+LDI R2 0
 ADD R1 R1 R2 1
 BRH 0b011 R5 ; if overflow, halt
 PST R1 R6
