@@ -157,14 +157,20 @@ class CPU:
     
     def ADD(self, operands: str) -> None:
         regs = [operands[0], operands[1], operands[2]]
-        update = operands[3]
+        if len(operands) == 3:
+            update = '0'
+        else:
+            update = operands[3]
         self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] + self.registers[int(regs[2], 2)]
         if update == '1':
             self.update_flags(self.registers[int(regs[0], 2)])
     
     def SUB(self, operands: str) -> None:
         regs = [operands[0], operands[1], operands[2]]
-        update = operands[3]
+        if len(operands) == 3:
+            update = '0'
+        else:
+            update = operands[3]
         self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] - self.registers[int(regs[2], 2)]
         if update == '1':
             self.update_flags(self.registers[int(regs[0], 2)])
