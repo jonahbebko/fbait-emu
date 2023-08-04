@@ -45,8 +45,10 @@ for index, line in enumerate(assembly):
 
         binary_operand = ""
 
-        if re.match(r"[rR]\d", operand):
+        if re.match(r"[rR]\d*", operand):
             # register, 3 bits
+            if int(operand[1:]) > 7:
+                raise Exception(f"Register {operand} should not be greater than 7")
             binary_operand = bin(int(operand[1:]))[2:].zfill(LENGTHS[opcode][oindex])
 
         elif re.match(r"0x[0-9a-fA-F]{1,2}", operand):
