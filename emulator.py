@@ -120,7 +120,14 @@ class CPU:
             self.pc += 1
         instruction = self.prom[self.pc]
         opcode, operands = self.decode(instruction)
-        self.execute(opcode, operands)
+        try:
+            self.execute(opcode, operands)
+        except IndexError as e:
+            print(f"IndexError: {e}\nmost likely caused by invalid register (>7)")
+            exit(1)
+        except Exception as e:
+            print(f"Exception: {e}")
+            exit(1)
     
     def run(self) -> None:
         while self.running:
