@@ -1,18 +1,27 @@
-import re
+import re, os
 
 INSTRUCTIONS = {}
 LENGTHS = {}
 ASSEMBLED = []
 
+files = [i[:-4] for i in os.listdir() if i.endswith(".txt") and i not in ["machinecode.txt", "isa.txt"]]
+if len(files) == 0:
+    raise Exception("no assembly files found")
+print("files found:", ", ".join(files))
+a = input("select file to assemble: ")
+
 isa_file = open("isa.txt", "r")
 isa = isa_file.readlines()
 isa_file.close()
 
-assembly_file = open("assembly.txt", "r")
+try:
+    assembly_file = open(f"{a}.txt", "r")
+except:
+    raise Exception(f"file {a}.txt not found")
 assembly = assembly_file.readlines()
 assembly_file.close()
 
-output = open("machinecode.txt", "w")
+output = open(f"{a}.asm", "w")
 
 for index, line in enumerate(isa):
     spl = line.split(":")

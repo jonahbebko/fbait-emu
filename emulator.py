@@ -1,3 +1,4 @@
+import os
 from port import PORT
 
 REGISTERS = [0] * 8
@@ -8,36 +9,19 @@ FLAGS = {'ZERO': 0, 'COUT': 0, 'MSB': 0}
 SETTINGS = {}
 PC = 0
 
-"""
---- ISA ---
-NOP:00000:1
-MOV:00001:3,3
-LDI:00010:3,8
-LOD:00011:3,8
-LDP:00100:3,3
-STR:00101:3,8
-STP:00110:3,3
-ADD:00111:3,3,3,1
-SUB:01000:3,3,3,1
-INC:01001:3,8
-DEC:01010:3,8
-AND:01011:3,3,3,1
-ORR:01100:3,3,3,1
-XOR:01101:3,3,3,1
-NOT:01110:3,3
-RSH:01111:3,3
-LSH:10000:3,3,3
-ROT:10001:3,3,3
-CMP:10010:3,3
-BRH:10011:3,3
-PCS:10100:3
-PLD:10101:3,3
-PST:10110:3,3
-SET:11110:3
-KYS:11111:0
-"""
+files = [i[:-4] for i in os.listdir() if i.endswith(".asm")]
+if len(files) == 0:
+    raise Exception("no programs found")
+print("files found:", ", ".join(files))
+a = input("select program to run: ")
 
-program: list[str] = open('machinecode.txt', 'r').readlines()
+try:
+    assembly_file = open(f"{a}.asm", 'r')
+except:
+    raise Exception(f'program {a}.asm not found')
+program: list[str] = assembly_file.readlines()
+assembly_file.close()
+
 for index, line in enumerate(program):
     PROM[index] = line.strip()
 
