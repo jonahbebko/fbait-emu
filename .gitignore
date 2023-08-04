@@ -1,6 +1,5 @@
 __pycache__
-*.txt
 *.asm
-!isa.txt
-!fib.txt
+*.fb
 !fib.asm
+!fib.fb
