@@ -100,7 +100,7 @@ class CPU:
             case '10001': self.ROT(operands)
             case '10010': self.CMP(operands)
             case '10011': self.BRH(operands)
-            case '10100': self.pcS(operands)
+            case '10100': self.PCS(operands)
             case '10101': self.PLD(operands)
             case '10110': self.PST(operands)
             case '11110': self.SET(operands)
