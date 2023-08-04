@@ -9,16 +9,16 @@ FLAGS = {'ZERO': 0, 'COUT': 0, 'MSB': 0}
 SETTINGS = {}
 PC = 0
 
-files = [i[:-4] for i in os.listdir() if i.endswith(".asm")]
+files = [i[:-3] for i in os.listdir() if i.endswith(".fb")]
 if len(files) == 0:
     raise Exception("no programs found")
 print("files found:", ", ".join(files))
 a = input("select program to run: ")
 
 try:
-    assembly_file = open(f"{a}.asm", 'r')
+    assembly_file = open(f"{a}.fb", 'r')
 except:
-    raise Exception(f'program {a}.asm not found')
+    raise Exception(f'program {a}.fb not found')
 program: list[str] = assembly_file.readlines()
 assembly_file.close()
 

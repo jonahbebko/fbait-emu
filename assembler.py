@@ -4,7 +4,7 @@ INSTRUCTIONS = {}
 LENGTHS = {}
 ASSEMBLED = []
 
-files = [i[:-4] for i in os.listdir() if i.endswith(".txt") and i not in ["machinecode.txt", "isa.txt"]]
+files = [i[:-4] for i in os.listdir() if i.endswith(".asm")]
 if len(files) == 0:
     raise Exception("no assembly files found")
 print("files found:", ", ".join(files))
@@ -15,13 +15,13 @@ isa = isa_file.readlines()
 isa_file.close()
 
 try:
-    assembly_file = open(f"{a}.txt", "r")
+    assembly_file = open(f"{a}.asm", "r")
 except:
-    raise Exception(f"file {a}.txt not found")
+    raise Exception(f"file {a}.asm not found")
 assembly = assembly_file.readlines()
 assembly_file.close()
 
-output = open(f"{a}.asm", "w")
+output = open(f"{a}.fb", "w")
 
 for index, line in enumerate(isa):
     spl = line.split(":")

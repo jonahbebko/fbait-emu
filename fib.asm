@@ -1,13 +1,14 @@
-00010 110 11110100
-00010 111 00000101
-00010 101 00001100
-00010 001 00000001
-00010 010 00000000
-00111 001 001 010 1
-10011 011 101
-10110 001 110
-00111 010 001 010 1
-10011 011 101
-10110 010 110
-10011 000 111
-00000 1
+; example program: fibonacci sequence
+LDI R6 0xF4 ; current port (decimal display)
+LDI R7 0x5  ; loop address
+LDI R5 0xC  ; overflow halt address
+LDI R1 1
+LDI R2 0
+ADD R1 R1 R2 1
+BRH 0b011 R5 ; if overflow, halt
+PST R1 R6
+ADD R2 R1 R2 1
+BRH 0b011 R5 ; if overflow, halt
+PST R2 R6
+BRH 0b000 R7 ; jump to return address in R7
+NOP 1
