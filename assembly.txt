@@ -1,3 +1,4 @@
+; example program: fibonacci sequence
 LDI R6 0xF4 ; current port (decimal display)
 LDI R7 0x5  ; loop address
 LDI R5 0xC  ; overflow halt address
