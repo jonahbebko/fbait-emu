@@ -5,11 +5,7 @@ Emulator written in Python for my 8-bit "FURRYBAIT" CPU built entirely in Minecr
 Tested and run only with `python3.11.4` but should work with any version of `python3`.
 
 ## Files
-`assembly.txt` - code for CPU written in custom assembly
-
 `isa.txt` - text representation of the CPU's instruction set architecture (ISA), in `instruction:opcode:oplength,oplength,oplength` format
-
-`machinecode.txt` - assembled binary output to be read and executed by CPU
 
 `assembler.py` - custom assembler which converts assembly into machine code
 
@@ -21,7 +17,10 @@ Tested and run only with `python3.11.4` but should work with any version of `pyt
 
 The ISA for FURRYBAIT can be found [here.](https://docs.google.com/spreadsheets/d/1BiFGfeyPMsWl56HnLYbaD-BoIZvfuITvZX8m75RIMmI/edit?usp=sharing)
 
-An example Fibonacci program can be found in `assembly.txt` which prints the first 12 fibonacci numbers (less than 256) then halts.
+Programs written in FURRYBAIT assembly are given the `.asm` file extension, and FURRYBAIT machine code is (nominally) given `.fb`.
+
+An example Fibonacci program is included, which prints the first 12 fibonacci numbers (less than 256) then halts.
+Its assembly is in `fib.asm` and machine code in `fib.fb`.
 
 Registers are prefixed with `R` like `R0` and `R4`.
 
