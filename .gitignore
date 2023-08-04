@@ -1,0 +1,6 @@
+__pycache__
+*.txt
+*.asm
+!isa.txt
+!fib.txt
+!fib.asm
