@@ -26,7 +26,10 @@ output = open(f"{a}.fb", "w")
 for index, line in enumerate(isa):
     spl = line.split(":")
     INSTRUCTIONS[spl[0]] = spl[1]
-    LENGTHS[spl[1]] = [int(i.replace("\n", "")) for i in spl[2].split(",")]
+    if len(spl) == 2: # zero-operand instruction
+        LENGTHS[spl[1]] = []
+    else:
+        LENGTHS[spl[1]] = [int(i.replace("\n", "")) for i in spl[2].split(",")]
 
 for index, line in enumerate(assembly):
 
