@@ -1,13 +1,15 @@
-import os
-from port import PORT
+import os, port
 
 REGISTERS = [0] * 8
 MEMORY = [0] * 32
-PROM = [0] * 32
-PORTS = [PORT() for _ in range(256)]
+PROM = ["0"] * 32
+PORTS = [port.PORT()] * 256
 FLAGS = {'ZERO': 0, 'COUT': 0, 'MSB': 0}
 SETTINGS = {}
 PC = 0
+
+PORTS[0xF3] = port.INPUT()
+PORTS[0xF4] = port.DECIMAL_OUTPUT()
 
 files = [i[:-3] for i in os.listdir() if i.endswith(".fb")]
 if len(files) == 0:
@@ -24,25 +26,6 @@ assembly_file.close()
 
 for index, line in enumerate(program):
     PROM[index] = line.strip()
-
-class DECIMAL_OUTPUT(PORT):
-
-    def load(self) -> int:
-        return 0
-
-    def store(self, value: int) -> None:
-        print(value)
-
-class INPUT(PORT):
-    
-    def load(self) -> int:
-        return int(input('hex > 0x'), 16)
-
-    def store(self, value: int) -> None:
-        pass
-
-PORTS[0xF3] = INPUT()
-PORTS[0xF4] = DECIMAL_OUTPUT()
 
 class CPU:
 
@@ -64,6 +47,7 @@ class CPU:
     
     def execute(self, opcode: str, operands: str) -> None:
         match opcode:
+            case '0': self.NOP(operands)
             case '00000': self.NOP(operands)
             case '00001': self.MOV(operands)
             case '00010': self.LDI(operands)
@@ -102,6 +86,8 @@ class CPU:
             self.branched = False
         else:
             self.pc += 1
+            self.pc %= 32
+        self.registers[0] = 0
         instruction = self.prom[self.pc]
         opcode, operands = self.decode(instruction)
         try:
@@ -120,7 +106,10 @@ class CPU:
             print('cpu halted')
 
     def NOP(self, operands: str) -> None:
-        halt = operands[0]
+        if not operands:
+            halt = False
+        else:
+            halt = operands[0]
         if halt == '1':
             self.running = False
 
@@ -187,7 +176,10 @@ class CPU:
     
     def AND(self, operands: str) -> None:
         regs = [operands[0], operands[1], operands[2]]
-        negate = operands[9]
+        if len(operands) == 3:
+            negate = '0'
+        else:
+            negate = operands[3]
         if negate == '1':
             self.registers[int(regs[0], 2)] = ~(self.registers[int(regs[1], 2)] & self.registers[int(regs[2], 2)])
         else:
@@ -195,7 +187,10 @@ class CPU:
     
     def ORR(self, operands: str) -> None:
         regs = [operands[0], operands[1], operands[2]]
-        negate = operands[9]
+        if len(operands) == 3:
+            negate = '0'
+        else:
+            negate = operands[3]
         if negate == '1':
             self.registers[int(regs[0], 2)] = ~(self.registers[int(regs[1], 2)] | self.registers[int(regs[2], 2)])
         else:
@@ -203,7 +198,10 @@ class CPU:
     
     def XOR(self, operands: str) -> None:
         regs = [operands[0], operands[1], operands[2]]
-        negate = operands[3]
+        if len(operands) == 3:
+            negate = '0'
+        else:
+            negate = operands[3]
         if negate == '1':
             self.registers[int(regs[0], 2)] = ~(self.registers[int(regs[1], 2)] ^ self.registers[int(regs[2], 2)])
         else:
@@ -265,12 +263,12 @@ class CPU:
     def PLD(self, operands: str) -> None:
         reg = operands[0]
         port = operands[1]
-        self.registers[int(reg, 2)] = self.ports[int(port, 2)].load()
+        self.registers[int(reg, 2)] = self.ports[self.registers[int(port, 2)]].load()
     
     def PST(self, operands: str) -> None:
         reg = operands[0]
         port = operands[1]
-        self.ports[int(port, 2)].store(self.registers[int(reg, 2)])
+        self.ports[self.registers[int(port, 2)]].store(self.registers[int(reg, 2)])
     
     def SET(self, operands: str) -> None:
         setting = operands[0]
