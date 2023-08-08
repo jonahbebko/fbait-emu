@@ -33,7 +33,9 @@ class CPU:
         self.cycles = 0
 
         self.ports[0xF3] = port.INPUT()
-        self.ports[0xF4] = port.DECIMAL_OUTPUT()
+        self.ports[0xF4] = port.HEX_OUTPUT()
+        self.ports[0xF5] = port.BINARY_OUTPUT()
+        self.ports[0xF6] = port.RANDOM_NUMBER()
     
     def decode(self, instruction: str) -> tuple[str, str]:
         split_instruction = instruction.split(" ")

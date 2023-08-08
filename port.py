@@ -1,3 +1,5 @@
+import random
+
 _COLORS = {
     "red": "\033[1;31m",
     "green": "\033[1;32m",
@@ -12,7 +14,7 @@ class PORT:
     def store(self, value: int) -> None:
         print(f"PORT: {value}")
 
-class DECIMAL_OUTPUT:
+class HEX_OUTPUT:
 
     def load(self) -> int:
         return 0
@@ -22,10 +24,26 @@ class DECIMAL_OUTPUT:
         bin_value = [_COLORS["green"] + bit + _COLORS["reset"] if bit == "1" else _COLORS["red"] + bit + _COLORS["reset"] for bit in bin_value]
         print(f"{value:03d} | 0x{value:02X} | 0b{''.join(bin_value)}")
 
+class BINARY_OUTPUT:
+
+    def load(self) -> int:
+        return 0
+
+    def store(self, value: int) -> None:
+        print("".join([_COLORS["green"] + bit + _COLORS["reset"] if bit == "1" else _COLORS["red"] + bit + _COLORS["reset"] for bit in f'{value:08b}']))
+
 class INPUT:
     
     def load(self) -> int:
         return int(input('hex > 0x'), 16)
+
+    def store(self, value: int) -> None:
+        pass
+
+class RANDOM_NUMBER:
+
+    def load(self) -> int:
+        return random.randint(0, 255)
 
     def store(self, value: int) -> None:
         pass
