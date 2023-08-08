@@ -38,6 +38,9 @@ class CPU:
         self.pc = PC
         self.running = True
         self.branched = False
+
+        self.ports[0xF3] = port.INPUT()
+        self.ports[0xF4] = port.DECIMAL_OUTPUT()
     
     def decode(self, instruction: str) -> tuple[str, str]:
         split_instruction = instruction.split(" ")
@@ -82,11 +85,6 @@ class CPU:
         self.flags["MSB"] = result & 0x80 != 0
 
     def step(self) -> None:
-        if self.branched:
-            self.branched = False
-        else:
-            self.pc += 1
-            self.pc %= 32
         self.registers[0] = 0
         instruction = self.prom[self.pc]
         opcode, operands = self.decode(instruction)
@@ -98,6 +96,11 @@ class CPU:
         except Exception as e:
             print(f"Exception: {e}")
             exit(1)
+        if self.branched:
+            self.branched = False
+        else:
+            self.pc += 1
+            self.pc %= 32
     
     def run(self) -> None:
         while self.running:
@@ -181,7 +184,7 @@ class CPU:
         else:
             negate = operands[3]
         if negate == '1':
-            self.registers[int(regs[0], 2)] = ~(self.registers[int(regs[1], 2)] & self.registers[int(regs[2], 2)])
+            self.registers[int(regs[0], 2)] = (self.registers[int(regs[1], 2)] & self.registers[int(regs[2], 2)]) ^ 0xFF
         else:
             self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] & self.registers[int(regs[2], 2)]
     
@@ -192,7 +195,7 @@ class CPU:
         else:
             negate = operands[3]
         if negate == '1':
-            self.registers[int(regs[0], 2)] = ~(self.registers[int(regs[1], 2)] | self.registers[int(regs[2], 2)])
+            self.registers[int(regs[0], 2)] = (self.registers[int(regs[1], 2)] | self.registers[int(regs[2], 2)]) ^ 0xFF
         else:
             self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] | self.registers[int(regs[2], 2)]
     
@@ -203,28 +206,28 @@ class CPU:
         else:
             negate = operands[3]
         if negate == '1':
-            self.registers[int(regs[0], 2)] = ~(self.registers[int(regs[1], 2)] ^ self.registers[int(regs[2], 2)])
+            self.registers[int(regs[0], 2)] = (self.registers[int(regs[1], 2)] ^ self.registers[int(regs[2], 2)]) ^ 0xFF
         else:
             self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] ^ self.registers[int(regs[2], 2)]
     
     def NOT(self, operands: str) -> None:
-        reg = operands[0]
-        self.registers[int(reg, 2)] = ~self.registers[int(reg, 2)]
+        regs = [operands[0], operands[1]]
+        self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] ^ 0xFF
     
     def RSH(self, operands: str) -> None:
-        reg = operands[0]
-        amt = operands[1]
-        self.registers[int(reg, 2)] >>= int(amt, 2)
+        regs = [operands[0], operands[1]]
+        amt = operands[2]
+        self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] >> int(amt, 2)
     
     def LSH(self, operands: str) -> None:
-        reg = operands[0]
-        amt = operands[1]
-        self.registers[int(reg, 2)] <<= int(amt, 2)
+        regs = [operands[0], operands[1]]
+        amt = operands[2]
+        self.registers[int(regs[0], 2)] = self.registers[int(regs[1], 2)] << int(amt, 2)
     
     def ROT(self, operands: str) -> None:
-        reg = operands[0]
-        amt = operands[1]
-        self.registers[int(reg, 2)] = (self.registers[int(reg, 2)] << int(amt, 2)) | (self.registers[int(reg, 2)] >> (8 - int(amt, 2)))
+        regs = [operands[0], operands[1]]
+        amt = operands[2]
+        self.registers[int(regs[0], 2)] = ((self.registers[int(regs[1], 2)] << (8 - int(amt, 2)) & 0xFF) | (self.registers[int(regs[1], 2)] >> int(amt, 2)))
     
     def CMP(self, operands: str) -> None:
         regs = [operands[0], operands[1]]
