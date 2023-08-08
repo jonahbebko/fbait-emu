@@ -1,26 +1,17 @@
 import os, port
 
-REGISTERS = [0] * 8
-MEMORY = [0] * 32
 PROM = ["0"] * 32
-PORTS = [port.PORT()] * 256
-FLAGS = {'ZERO': 0, 'COUT': 0, 'MSB': 0}
-SETTINGS = {}
-PC = 0
-
-PORTS[0xF3] = port.INPUT()
-PORTS[0xF4] = port.DECIMAL_OUTPUT()
 
 files = [i[:-3] for i in os.listdir("programs") if i.endswith(".fb")]
 if len(files) == 0:
-    raise Exception("no programs found")
+    raise FileNotFoundError("no programs found")
 print("files found:", ", ".join(files))
 a = input("select program to run: ")
 
 try:
     assembly_file = open(f"programs/{a}.fb", 'r')
 except:
-    raise Exception(f'program {a}.fb not found')
+    raise FileNotFoundError(f'program {a}.fb not found')
 program: list[str] = assembly_file.readlines()
 assembly_file.close()
 
@@ -30,14 +21,16 @@ for index, line in enumerate(program):
 class CPU:
 
     def __init__(self):
-        self.registers = REGISTERS
-        self.memory = MEMORY
+        self.registers = [0] * 8
+        self.memory = [0] * 32
         self.prom = PROM
-        self.ports = PORTS
-        self.flags = FLAGS
-        self.pc = PC
+        self.ports = [port.PORT()] * 256
+        self.flags = {'ZERO': 0, 'COUT': 0, 'MSB': 0}
+        self.pc = 0
+        self.settings = {}
         self.running = True
         self.branched = False
+        self.cycles = 0
 
         self.ports[0xF3] = port.INPUT()
         self.ports[0xF4] = port.DECIMAL_OUTPUT()
@@ -85,6 +78,7 @@ class CPU:
         self.flags["MSB"] = result & 0x80 != 0
 
     def step(self) -> None:
+        self.cycles += 1
         self.registers[0] = 0
         instruction = self.prom[self.pc]
         opcode, operands = self.decode(instruction)
@@ -96,6 +90,8 @@ class CPU:
         except Exception as e:
             print(f"Exception: {e}")
             exit(1)
+        for i in range(len(self.registers)):
+            self.registers[i] %= 256
         if self.branched:
             self.branched = False
         else:
@@ -106,7 +102,12 @@ class CPU:
         while self.running:
             self.step()
         else:
-            print('cpu halted')
+            self.halt("program terminated")
+    
+    def halt(self, reason):
+        print(f"halt: {reason}")
+        print(f"cycles: {self.cycles}")
+        exit()
 
     def NOP(self, operands: str) -> None:
         if not operands:
@@ -132,7 +133,7 @@ class CPU:
     
     def LDP(self, operands: str) -> None:
         regs = [operands[0], operands[1]]
-        if int(regs[1], 2) > len(MEMORY):
+        if int(regs[1], 2) > len(self.memory):
             raise IndexError(f'memory address {regs[1]} is out of bounds')
         self.registers[int(regs[0], 2)] = self.memory[self.registers[int(regs[1], 2)]]
     
@@ -143,7 +144,7 @@ class CPU:
     
     def STP(self, operands: str) -> None:
         regs = [operands[0], operands[1]]
-        if int(regs[1], 2) > len(MEMORY):
+        if int(regs[1], 2) > len(self.memory):
             raise IndexError(f'memory address {regs[1]} is out of bounds')
         self.memory[self.registers[int(regs[1], 2)]] = self.registers[int(regs[0], 2)]
     
@@ -282,7 +283,7 @@ class CPU:
                 raise ValueError(f'invalid setting {setting}')
     
     def KYS(self, operands: str) -> None:
-        exit("cpu blew up :(")
+        self.halt("cpu blew up :(")
 
 cpu = CPU()
 cpu.run()
