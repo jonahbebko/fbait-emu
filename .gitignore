@@ -1,6 +1,2 @@
 __pycache__
 .vscode
-*.asm
-*.fb
-!fib.asm
-!fib.fb
