@@ -4,7 +4,7 @@ INSTRUCTIONS = {}
 LENGTHS = {}
 ASSEMBLED = []
 
-files = [i[:-4] for i in os.listdir() if i.endswith(".asm")]
+files = [i[:-4] for i in os.listdir("programs") if i.endswith(".asm")]
 if len(files) == 0:
     raise Exception("failed: no assembly files found")
 print("files found:", ", ".join(files))
@@ -15,13 +15,13 @@ isa = isa_file.readlines()
 isa_file.close()
 
 try:
-    assembly_file = open(f"{a}.asm", "r")
+    assembly_file = open(f"programs/{a}.asm", "r")
 except:
     raise Exception(f"failed: file {a}.asm not found")
 assembly = assembly_file.readlines()
 assembly_file.close()
 
-output = open(f"{a}.fb", "w")
+output = open(f"programs/{a}.fb", "w")
 
 for index, line in enumerate(isa):
     spl = line.split(":")

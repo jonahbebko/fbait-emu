@@ -11,14 +11,14 @@ PC = 0
 PORTS[0xF3] = port.INPUT()
 PORTS[0xF4] = port.DECIMAL_OUTPUT()
 
-files = [i[:-3] for i in os.listdir() if i.endswith(".fb")]
+files = [i[:-3] for i in os.listdir("programs") if i.endswith(".fb")]
 if len(files) == 0:
     raise Exception("no programs found")
 print("files found:", ", ".join(files))
 a = input("select program to run: ")
 
 try:
-    assembly_file = open(f"{a}.fb", 'r')
+    assembly_file = open(f"programs/{a}.fb", 'r')
 except:
     raise Exception(f'program {a}.fb not found')
 program: list[str] = assembly_file.readlines()
