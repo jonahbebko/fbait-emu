@@ -40,6 +40,16 @@ class CPU:
         self.ports[0xF4] = lib.io.HEX_OUTPUT
         self.ports[0xF5] = lib.io.BINARY_OUTPUT
         self.ports[0xF6] = lib.io.RANDOM_NUMBER
+
+        self.ports[0xF7] = lib.gpu.CHARACTER
+        self.ports[0xF8] = lib.gpu.X1
+        self.ports[0xF9] = lib.gpu.X2
+        self.ports[0xFA] = lib.gpu.Y1
+        self.ports[0xFB] = lib.gpu.Y2
+        self.ports[0xFC] = lib.gpu.Z1
+        self.ports[0xFD] = lib.gpu.Z2
+        self.ports[0xFE] = lib.gpu.MODE
+        self.ports[0xFF] = lib.gpu.FUNCTION
     
     def decode(self, instruction: str) -> tuple[str, str]:
         split_instruction = instruction.split(" ")
