@@ -1,4 +1,8 @@
-import os, port
+import os
+import lib.port
+import lib.gpu
+import lib.io
+import lib.colors
 
 PROM = ["0"] * 32
 
@@ -24,7 +28,7 @@ class CPU:
         self.registers = [0] * 8
         self.memory = [0] * 32
         self.prom = PROM
-        self.ports = [port.PORT()] * 256
+        self.ports = [lib.port.PORT()] * 256
         self.flags = {'ZERO': 0, 'COUT': 0, 'MSB': 0}
         self.pc = 0
         self.settings = {}
@@ -32,10 +36,10 @@ class CPU:
         self.branched = False
         self.cycles = 0
 
-        self.ports[0xF3] = port.INPUT()
-        self.ports[0xF4] = port.HEX_OUTPUT()
-        self.ports[0xF5] = port.BINARY_OUTPUT()
-        self.ports[0xF6] = port.RANDOM_NUMBER()
+        self.ports[0xF3] = lib.io.INPUT
+        self.ports[0xF4] = lib.io.HEX_OUTPUT
+        self.ports[0xF5] = lib.io.BINARY_OUTPUT
+        self.ports[0xF6] = lib.io.RANDOM_NUMBER
     
     def decode(self, instruction: str) -> tuple[str, str]:
         split_instruction = instruction.split(" ")
