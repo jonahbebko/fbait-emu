@@ -1,4 +1,7 @@
-import tkinter
+try:
+    import tkinter
+except ImportError:
+    tkinter = None
 import math
 from .port import PORT
 
@@ -53,6 +56,8 @@ class Z2(PORT):
 class MODE(PORT):
 
     def store(value: int) -> None:
+        if not tkinter:
+            raise ImportError("graphical environment required for gpu module")
         match value:
             case 0x00: # 3x5 text
                 pass
@@ -81,6 +86,8 @@ class MODE(PORT):
 class FUNCTION(PORT):
 
     def store(value: int) -> None:
+        if not tkinter:
+            raise ImportError("graphical environment required for gpu module")
         global _x1, _x2, _y1, _y2, _z1, _z2, _root
         match value:
             case 0x00: # clear screen
