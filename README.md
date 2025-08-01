@@ -4,6 +4,8 @@
 Emulator written in Python for my 8-bit "FURRYBAIT" CPU built entirely in Minecraft.
 Tested and run only with `python3.11.4` but should work with any version of `python3`.
 
+<img width="2048" height="2048" alt="area_render_53" src="https://github.com/user-attachments/assets/a57c1a51-a02b-4989-8adc-b898b3d28b98" />
+
 ## Files
 `isa.txt` - text representation of the CPU's instruction set architecture (ISA), in `instruction:opcode:oplength,oplength,oplength` format
 
